@@ -45,15 +45,6 @@ struct speedPID {
 
     // Returns value to spin motor according to PID adjustment
     const float PIDAdjust(const float& target);
-
-    // Finds error in motor speed to target
-    const float proport(const float& target, const float& speed);
-
-    // Finds total value of accumulated error (integral)
-    const float integrate(const float& error);
-
-    // Finds immediate change in error (derivative)
-    const float derive(const float& error);
 };
 
 // Struct containing all drivebase motors
