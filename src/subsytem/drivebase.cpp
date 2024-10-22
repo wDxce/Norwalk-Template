@@ -1,4 +1,6 @@
 #include "main.h"
+#include "pros/motors.hpp"
+#include "pros/imu.hpp"
 
 // PID Values (Adjust these to the standards of your robot)
 float kP = 0.00; // Proportional constant
@@ -19,12 +21,34 @@ float getDistanceTraveled() {
 
 // Spin all the drive motors with specified speeds
 void spinMotors(const float& frSpd, const float& mrSpd, const float& rrSpd, const float& flSpd, const float& mlSpd, const float& rlSpd) {
-    driveB.fr.storedMotor.move_velocity(frSpd); // Set front-right motor speed
-    driveB.mr.storedMotor.move_velocity(mrSpd); // Set mid-right motor speed
-    driveB.rr.storedMotor.move_velocity(rrSpd); // Set rear-right motor speed
-    driveB.fl.storedMotor.move_velocity(flSpd); // Set front-left motor speed
-    driveB.ml.storedMotor.move_velocity(mlSpd); // Set mid-left motor speed
-    driveB.rl.storedMotor.move_velocity(rlSpd); // Set rear-left motor speed
+    driveB.fr.storedMotor = frSpd;
+    driveB.mr.storedMotor = mrSpd;
+    driveB.rr.storedMotor = rrSpd;
+    driveB.fl.storedMotor = flSpd;
+    driveB.ml.storedMotor = mlSpd;
+    driveB.rl.storedMotor = rlSpd;
+}
+
+/* PID Calculation Logic */
+
+// Calculate PID value for a single motor
+float calculatePID(speedPID& pid, const float& target) {
+    float currentSpeed = pid.storedMotor.get_actual_velocity(); // Get current motor speed
+    float error = target - currentSpeed; // Calculate error between target and current speed
+    float integral = pid.integral + error; // Update integral term with error
+    
+    // Limit integral to prevent windup
+    if (fabs(integral) > integralLimit) {
+        integral = (integral > 0) ? integralLimit : -integralLimit;
+    }
+    
+    float derivative = error - pid.lastError; // Calculate derivative term
+    
+    // Calculate output using PID formula
+    float output = (kP * error) + (kI * integral) + (kD * derivative);
+    pid.lastError = error; // Update last error for next cycle
+    pid.integral = integral; // Store integral for future use
+    return output; // Return calculated output
 }
 
 // Set motor speeds for driving forward and reverse
@@ -51,16 +75,19 @@ void inertialMotorSet(const float& target, const float& speed) {
 
 // Calculate PID values for all drive motors
 const adjustedMotors calcPidMotors(const float& rightTar, const float& leftTar) {
-    adjustedMotors motorOutputs;
+    const auto& temp = adjustedMotors{
+    
     // Right side calculations
-    motorOutputs.fr = calculatePID(driveB.fr, rightTar);
-    motorOutputs.mr = calculatePID(driveB.mr, rightTar);
-    motorOutputs.rr = calculatePID(driveB.rr, rightTar);
+        driveB.fr.PIDAdjust(rightTar),
+        driveB.mr.PIDAdjust(rightTar),
+        driveB.rr.PIDAdjust(rightTar),
+    
     // Left side calculations
-    motorOutputs.fl = calculatePID(driveB.fl, leftTar);
-    motorOutputs.ml = calculatePID(driveB.ml, leftTar);
-    motorOutputs.rl = calculatePID(driveB.rl, leftTar);
-    return motorOutputs;
+        driveB.fl.PIDAdjust(leftTar),
+        driveB.ml.PIDAdjust(leftTar),
+        driveB.rl.PIDAdjust(leftTar),
+    };
+    return temp;
 }
 
 // Calculate PID values for turning using the inertial sensor
@@ -70,30 +97,6 @@ const adjustedMotors inertialCalcPidMotors(const float& target) {
         -returnValue, -returnValue, -returnValue, 
         returnValue, returnValue, returnValue
     }; // Adjust motor values for turning
-}
-
-/* PID Calculation Logic */
-
-// Calculate PID value for a single motor
-float calculatePID(speedPID& pid, const float& target) {
-    float currentSpeed = pid.storedMotor.get_actual_velocity(); // Get current motor speed
-    float error = target - currentSpeed; // Calculate error between target and current speed
-    float integral = pid.integral + error; // Update integral term with error
-
-    // Limit integral to prevent windup
-    if (fabs(integral) > integralLimit) {
-        integral = (integral > 0) ? integralLimit : -integralLimit;
-    }
-
-    float derivative = error - pid.lastError; // Calculate derivative term
-
-    // Calculate output using PID formula
-    float output = (kP * error) + (kI * integral) + (kD * derivative);
-
-    pid.lastError = error; // Update last error for next cycle
-    pid.integral = integral; // Store integral for future use
-
-    return output; // Return calculated output
 }
 
 /* Speed PID Functionality */

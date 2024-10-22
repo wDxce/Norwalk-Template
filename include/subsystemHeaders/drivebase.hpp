@@ -1,4 +1,6 @@
 #include "main.h"
+#include "pros/motors.hpp"
+#include "pros/imu.hpp"
 
 /*
 Structures
@@ -26,6 +28,9 @@ Driver Funcions
 
 //This can control the calling for driving fwd & rev, also the driver control functions
 extern void PIDMotorSet(const float& vertTar, const float& latTar);
+
+//Calculations made for the PID
+//float calculatePID(speedPID& pid, const float& target);
 
 //Calling for the use of the inertial sensor used to calculate the turning
 const adjustedMotors inertialCalcPidMotors(const float& target);

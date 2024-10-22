@@ -79,8 +79,6 @@ void opcontrol(void);
 #include "subsystemHeaders\drivebase.hpp"
 #include "subsystemHeaders\autonFunctions.hpp"
 #include "subsystemHeaders\autons.hpp"
-
-#include <tuple>
 //#include <iostream>
 #endif
 

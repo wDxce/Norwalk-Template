@@ -15,7 +15,7 @@ Using it in the turning Func can allow for double precision checking
 /*
 Refer to Ike White for questions to creating functions
 Try it out first to challenge yourself and improve as a programmer
-Check out my github for updates: 
+Check out my github for updates: https://github.com/wDxce/Norwalk-Template
 Go to this site to learn Purdue Pros: 
 https://pros.cs.purdue.edu/v5/getting-started/new-users.html
 */
@@ -38,10 +38,10 @@ void stop(){
 /*
 Translate will be used to go forward and backwards
 I suggest parmeters based around distance traveled and speed
-Try to incorporate pi into this and have your wheel diameter defined for better precision
+Try to incorporate the distanceTraveled function for better precision to the distance moved
 */
 void translate(){
-
+    
 }
 
 /*

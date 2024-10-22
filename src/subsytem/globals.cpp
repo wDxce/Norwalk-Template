@@ -1,4 +1,8 @@
 #include "main.h"
+#include "pros/motors.hpp"
+#include "pros/adi.hpp"
+#include "pros/rtos.hpp"
+#include "pros/imu.hpp"
 
 // Initialize controller
 pros::Controller master(CONTROLLER_MASTER);
@@ -8,15 +12,15 @@ Define Motors & Sensors
 */
 
 // Drivebase Motors
-#define frPort 1 // Change port to your ports
-#define mrPort 2 // Change port to your ports
-#define rrPort 3 // Change port to your ports
-#define flPort 4 // Change port to your ports
-#define mlPort 5 // Change port to your ports
-#define rlPort 6 // Change port to your ports
+#define frPort 7 // Change port to your ports
+#define mrPort 4 // Change port to your ports
+#define rrPort 1 // Change port to your ports
+#define flPort 20 // Change port to your ports
+#define mlPort 10 // Change port to your ports
+#define rlPort 9 // Change port to your ports
 
 // Sensors
-#define inertialPort 7
+#define inertialPort 2
 
 // Pneumatics
 #define pistonName 'a' // Change to your 3 wire port
@@ -41,7 +45,8 @@ drivebaseMotorStore driveB = drivebaseMotorStore{
 /*
 Set Drivebase brake mode
 */
-void setDriveBrakeMode(pros::motor_brake_mode_e_t brakeMode) {
+// Function to set brake mode for all drivebase motors
+void setDrivebaseBrakeMode(pros::motor_brake_mode_e_t brakeMode) {
     driveB.fr.storedMotor.set_brake_mode(brakeMode);
     driveB.mr.storedMotor.set_brake_mode(brakeMode);
     driveB.rr.storedMotor.set_brake_mode(brakeMode);

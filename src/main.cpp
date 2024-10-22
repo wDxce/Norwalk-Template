@@ -23,9 +23,8 @@ void on_center_button() {
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-	pros::lcd::initialize();
 	//Used for autons mainly makes stopping more precise
-	setDriveBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
+	//setDrivebaseBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
 }
 
 /**
@@ -58,6 +57,7 @@ void competition_initialize() {}
  * from where it left off.
  */
 void autonomous() {
+	
 	/*
 	you can create autons in the auton.cpp and auton.hpp and run them all here like so
 	this is just better for file managing and easier to change autons
@@ -83,7 +83,6 @@ void opcontrol() {
 		
 		//set the motors to spin according to joystick input value.
 		PIDMotorSet(master.get_analog(ANALOG_LEFT_Y), - master.get_analog(ANALOG_RIGHT_X));
-
 
 		//Never remove
 		pros::delay(10);
